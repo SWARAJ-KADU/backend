@@ -12,4 +12,10 @@ app.use(express.urlencoded({extended:true, limit:true}))
 app.use(express.static("public"))
 app.use(cookieParser())
 
-export default app
+//routes imports
+import userRouter from "./controllers/user.controller.js"
+
+//routes decleration
+app.use("/api/v1/user", userRouter)//when user goes to /user then control goes to userRouter
+
+export {app}
