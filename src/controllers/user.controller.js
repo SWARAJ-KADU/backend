@@ -14,14 +14,13 @@ const registerUser = asyncHandler(async (req, res, next)=>{
     //remove password and refresh token field from response
     //check for user creation
     //return response
-
     const {fullName, username, email, password} = req.body
     if(
-        [fullName, username, email, password].some((field) => field?.trim() === "")  
+        [fullName, username, email, password?.toString()].some((field) => field?.trim() === "")  
     ){
         throw new ApiError(400, "fullname is required")
     }
-    const existedUser = User.findOne({
+    const existedUser = await User.findOne({
         $or: [{username},{email}]
     })
     if(existedUser){
@@ -29,11 +28,16 @@ const registerUser = asyncHandler(async (req, res, next)=>{
     }
 
     const avatarLocalPath = req.files?.avatar[0]?.path
-    const coverImageLocalPath = req.files?.coverImage[0]?.path
 
     if(!avatarLocalPath){
         throw new ApiError(400, "Avatar file is required")
     }
+
+    let coverImageLocalPath;
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0){
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
+
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)

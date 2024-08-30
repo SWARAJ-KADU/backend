@@ -13,7 +13,7 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 //routes imports
-import userRouter from "./controllers/user.controller.js"
+import userRouter from "./routes/user.routes.js"
 
 //routes decleration
 app.use("/api/v1/user", userRouter)//when user goes to /user then control goes to userRouter
